@@ -19,22 +19,22 @@ const App = () => {
       </header>
       <div className={`transition-max-height duration-300 ease-in-out ${menuOpen ? 'max-h-screen' : 'max-h-0'} overflow-hidden`}>
         <nav className="bg-gray-700 p-4 flex flex-col items-center">
-          <NavLink to="/" className="block px-4 py-2 hover:text-blue-400" end>
+          <NavLink to="/kinex/dashboard" className="block px-4 py-2 hover:text-blue-400" end>
             Dashboard
           </NavLink>
-          <NavLink to="/progress" className="block px-4 py-2 hover:text-blue-400">
+          <NavLink to="/kinex/progress" className="block px-4 py-2 hover:text-blue-400">
             Progress
           </NavLink>
-          <NavLink to="/edit-plan" className="block px-4 py-2 hover:text-blue-400">
+          <NavLink to="/kinex/edit-plan" className="block px-4 py-2 hover:text-blue-400">
             Edit Plan
           </NavLink>
         </nav>
       </div>
       <main className="p-4">
         <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/progress" element={<Progress />} />
-          <Route path="/edit-plan" element={<EditPlan />} />
+          <Route path="/kinex/dashboard" element={<Dashboard />} />
+          <Route path="/kinex/progress" element={<Progress />} />
+          <Route path="/kinex/edit-plan" element={<EditPlan />} />
         </Routes>
       </main>
     </div>
