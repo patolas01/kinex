@@ -15,5 +15,5 @@ body {
 }
 
 .transition-max-height {
-  transition: max-height 0.3s ease-in-out;
+  transition: max-height 3s ease-in-out;
 }

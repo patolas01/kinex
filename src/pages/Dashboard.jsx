@@ -18,24 +18,26 @@ const Dashboard = () => {
     return (
         <div className="p-4">
             {Object.entries(plans).map(([day, exercises]) => (
-                <div key={day} className="border rounded-lg p-4 mb-4 shadow-lg">
+                <div key={day} className="border rounded-lg p-4 mb-4 shadow-lg transition-all duration-1000">
                     <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleExpand(day)}>
                         <h2 className="text-xl font-bold">{day}</h2>
                         <span>{expandedDay === day ? '-' : '+'}</span>
                     </div>
-                    {expandedDay === day && (
-                        <div className="mt-4">
-                            {exercises.map((exercise, index) => (
-                                <div key={index} className="border-b py-2">
-                                    <div className="flex justify-between">
-                                        <span>{exercise.title}</span>
-                                        <span>{exercise.reps}</span>
+                    <div className={`overflow-hidden transition-all duration-1000 ${expandedDay === day ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
+                        {expandedDay === day && (
+                            <div className="mt-4">
+                                {exercises.map((exercise, index) => (
+                                    <div key={index} className="border-b py-2">
+                                        <div className="flex justify-between">
+                                            <span>{exercise.title}</span>
+                                            <span>{exercise.reps}</span>
+                                        </div>
+                                        <p className="text-sm mt-2">{exercise.description}</p>
                                     </div>
-                                    <p className="text-sm mt-2">{exercise.description}</p>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             ))}
         </div>
