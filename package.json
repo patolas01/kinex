@@ -1,7 +1,7 @@
 {
   "name": "kinex",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "homepage": "https://patolas01.github.io/kinex/",
   "scripts": {
@@ -13,7 +13,12 @@
     "deploy": "main -d dist"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.3.1",
+    "@mui/material": "^6.3.1",
     "react": "^18.3.1",
+    "react-circular-progressbar": "^2.1.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.1"
   },
