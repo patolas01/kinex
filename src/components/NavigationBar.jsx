@@ -6,7 +6,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const NavigationBar = () => {
     return (
-        <div className="bg-gray-800 p-4 flex justify-around fixed bottom-0 w-full">
+        <div className="bg-gray-800 p-3 flex justify-around fixed bottom-0 w-full">
             <NavLink to="/kinex/dashboard" className={({ isActive }) => `flex flex-col items-center ${isActive ? 'text-blue-400' : 'text-gray-400'}`}>
                 <HomeIcon />
                 <span className="text-xs">Home</span>
