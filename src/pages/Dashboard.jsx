@@ -1,26 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import Checkbox from '@mui/material/Checkbox';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper';
+import 'swiper/swiper-bundle.min.css';
+import { useSpring, animated } from '@react-spring/web';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+// Create a theme for the checkboxes
 const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#ffffff',
-        },
+  palette: {
+    primary: {
+      main: '#ffffff',
     },
+  },
 });
 
-const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+// Define the days of the week
+const daysOfWeek = [
+  { id: 0, name: 'Sunday' },
+  { id: 1, name: 'Monday' },
+  { id: 2, name: 'Tuesday' },
+  { id: 3, name: 'Wednesday' },
+  { id: 4, name: 'Thursday' },
+  { id: 5, name: 'Friday' },
+  { id: 6, name: 'Saturday' },
+];
 
 const Dashboard = () => {
     const [selectedDayIndex, setSelectedDayIndex] = useState(new Date().getDay());
+    const swiperRef = useRef(null);
     const [workouts, setWorkouts] = useState({
-        Sunday: [],
-        Monday: [
+        0: [],
+        1: [
             {
                 id: 1,
                 name: 'Push-ups',
@@ -54,7 +69,7 @@ const Dashboard = () => {
                 completed: false,
             },
         ],
-        Tuesday: [
+        2: [
             {
                 id: 5,
                 name: 'Push-ups',
@@ -80,8 +95,8 @@ const Dashboard = () => {
                 completed: false,
             },
         ],
-        Wednesday: [],
-        Thursday: [
+        3: [],
+        4: [
             {
                 id: 8,
                 name: 'Burpees',
@@ -107,7 +122,7 @@ const Dashboard = () => {
                 completed: false,
             },
         ],
-        Friday: [
+        5: [
             {
                 id: 11,
                 name: 'Push-ups',
@@ -141,7 +156,7 @@ const Dashboard = () => {
                 completed: false,
             },
         ],
-        Saturday: [
+        6: [
             {
                 id: 15,
                 name: 'Stretching Routine',
@@ -161,13 +176,8 @@ const Dashboard = () => {
         ],
     });
 
-
-    const handleDayChange = (direction) => {
-        if (direction === 'prev') {
-            setSelectedDayIndex((prevIndex) => (prevIndex === 0 ? 6 : prevIndex - 1));
-        } else if (direction === 'next') {
-            setSelectedDayIndex((prevIndex) => (prevIndex === 6 ? 0 : prevIndex + 1));
-        }
+    const handleDayChange = (swiper) => {
+        setSelectedDayIndex(swiper.realIndex);
     };
 
     const toggleCompletion = (day, id) => {
@@ -179,19 +189,56 @@ const Dashboard = () => {
         }));
     };
 
-    const selectedDay = daysOfWeek[selectedDayIndex];
+    const selectedDay = daysOfWeek[selectedDayIndex].id;
     const exercises = workouts[selectedDay];
     const completedCount = exercises.filter((exercise) => exercise.completed).length;
     const totalExercises = exercises.length;
 
+    const transitions = useSpring({
+        opacity: 1,
+        transform: 'translateY(0)',
+        from: { opacity: 0, transform: 'translateY(20px)' },
+        config: { duration: 800 },
+        // reset: true,
+        // onRest: () => {
+        //     transitions.opacity.set(1);
+        // },
+    });
+
     return (
         <div className="min-h-screen bg-gray-900 text-white flex flex-col">
-            <div className="flex justify-between items-center p-4">
-                <button onClick={() => handleDayChange('prev')} className="text-gray-400">
+            <div className="flex justify-center items-center p-4 relative">
+                <button
+                    className="absolute left-0 z-10 text-gray-400 p-3"
+                    onClick={() => swiperRef.current.swiper.slidePrev()}
+                >
                     <KeyboardArrowLeftIcon />
                 </button>
-                <h2 className="text-lg font-bold">{selectedDay}</h2>
-                <button onClick={() => handleDayChange('next')} className="text-gray-400">
+                <Swiper
+                    ref={swiperRef}
+                    spaceBetween={50}
+                    slidesPerView={1}
+                    onSlideChange={handleDayChange}
+                    initialSlide={selectedDayIndex}
+                    navigation={{
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    }}
+                    modules={[Navigation]}
+                    loop={true}
+                    effect="fade"
+                    fadeEffect={{ crossFade: true }}
+                >
+                    {daysOfWeek.map((day) => (
+                        <SwiperSlide key={day.id}>
+                            <h2 className="text-lg font-bold text-center">{day.name}</h2>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+                <button
+                    className="absolute right-0 z-10 text-gray-400 p-3"
+                    onClick={() => swiperRef.current.swiper.slideNext()}
+                >
                     <KeyboardArrowRightIcon />
                 </button>
             </div>
@@ -199,14 +246,13 @@ const Dashboard = () => {
             <div className="flex justify-center items-center mb-6 mt-6">
                 <div style={{ width: 160, height: 160 }}>
                     <CircularProgressbarWithChildren value={(completedCount / totalExercises) * 100}>
-                        <h1 className='text-3xl text-center'>{`${completedCount}/${totalExercises}`}</h1>
-                        <h1 className="text-sm text-center text-white">Exercises</h1>
+                        <h1 className='text-4xl text-center'>{`${completedCount}/${totalExercises}`}</h1>
+                        <h1 className="text-sm text-center text-gray-100">Exercises</h1>
                     </CircularProgressbarWithChildren>
-
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4">
+            <animated.div style={transitions} className="flex-1 overflow-y-auto px-4">
                 {exercises.map((exercise) => (
                     <div
                         key={exercise.id}
@@ -238,7 +284,7 @@ const Dashboard = () => {
                         </div>
                     </div>
                 ))}
-            </div>
+            </animated.div>
         </div>
     );
 };
