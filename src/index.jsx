@@ -5,7 +5,7 @@ import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter basename="/kinex/dashboard">
+    <BrowserRouter basename="/kinex">
       <App />
     </BrowserRouter>
   </React.StrictMode>,
