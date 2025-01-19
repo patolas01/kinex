@@ -1,0 +1,38 @@
+.swiper-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  transition: opacity 0.1s ease;
+}
+
+.swiper-slide-active {
+  opacity: 1;
+}
+
+.swiper-slide-next,
+.swiper-slide-prev {
+  opacity: 0;
+}
+
+.swiper-fade-left,
+.swiper-fade-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6rem;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.swiper-fade-left {
+  left: 0;
+  background: linear-gradient(to right, rgba(17, 24, 39) 2.5rem, transparent);
+}
+
+.swiper-fade-right {
+  right: 0;
+  background: linear-gradient(to left, rgba(17, 24, 39) 2.5rem, transparent);
+}

@@ -1,0 +1,13 @@
+.completed-day {
+    background-color: #278cff !important;
+}
+
+.controls {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.statistics {
+    margin-top: 20px;
+    text-align: center;
+}

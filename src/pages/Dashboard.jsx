@@ -9,25 +9,27 @@ import 'swiper/swiper-bundle.min.css';
 import { useSpring, animated } from '@react-spring/web';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import '../styles/Dashboard.css'; // Import the CSS file for gradient effect
 
 // Create a theme for the checkboxes
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#ffffff',
+    palette: {
+        mode: 'dark',
+        primary: {
+            main: '#ffffff',
+        },
     },
-  },
 });
 
 // Define the days of the week
 const daysOfWeek = [
-  { id: 0, name: 'Sunday' },
-  { id: 1, name: 'Monday' },
-  { id: 2, name: 'Tuesday' },
-  { id: 3, name: 'Wednesday' },
-  { id: 4, name: 'Thursday' },
-  { id: 5, name: 'Friday' },
-  { id: 6, name: 'Saturday' },
+    { id: 0, name: 'Sunday' },
+    { id: 1, name: 'Monday' },
+    { id: 2, name: 'Tuesday' },
+    { id: 3, name: 'Wednesday' },
+    { id: 4, name: 'Thursday' },
+    { id: 5, name: 'Friday' },
+    { id: 6, name: 'Saturday' },
 ];
 
 const Dashboard = () => {
@@ -177,7 +179,8 @@ const Dashboard = () => {
     });
 
     const handleDayChange = (swiper) => {
-        setSelectedDayIndex(swiper.realIndex);
+        const newIndex = swiper.realIndex;
+        setSelectedDayIndex(newIndex);
     };
 
     const toggleCompletion = (day, id) => {
@@ -206,86 +209,88 @@ const Dashboard = () => {
     });
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white flex flex-col">
-            <div className="flex justify-center items-center p-4 relative">
-                <button
-                    className="absolute left-0 z-10 text-gray-400 p-3"
-                    onClick={() => swiperRef.current.swiper.slidePrev()}
-                >
-                    <KeyboardArrowLeftIcon />
-                </button>
-                <Swiper
-                    ref={swiperRef}
-                    spaceBetween={50}
-                    slidesPerView={1}
-                    onSlideChange={handleDayChange}
-                    initialSlide={selectedDayIndex}
-                    navigation={{
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev',
-                    }}
-                    modules={[Navigation]}
-                    loop={true}
-                    effect="fade"
-                    fadeEffect={{ crossFade: true }}
-                >
-                    {daysOfWeek.map((day) => (
-                        <SwiperSlide key={day.id}>
-                            <h2 className="text-lg font-bold text-center">{day.name}</h2>
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
-                <button
-                    className="absolute right-0 z-10 text-gray-400 p-3"
-                    onClick={() => swiperRef.current.swiper.slideNext()}
-                >
-                    <KeyboardArrowRightIcon />
-                </button>
-            </div>
-
-            <div className="flex justify-center items-center mb-6 mt-6">
-                <div style={{ width: 160, height: 160 }}>
-                    <CircularProgressbarWithChildren value={(completedCount / totalExercises) * 100}>
-                        <h1 className='text-4xl text-center'>{`${completedCount}/${totalExercises}`}</h1>
-                        <h1 className="text-sm text-center text-gray-100">Exercises</h1>
-                    </CircularProgressbarWithChildren>
-                </div>
-            </div>
-
-            <animated.div style={transitions} className="flex-1 overflow-y-auto px-4">
-                {exercises.map((exercise) => (
-                    <div
-                        key={exercise.id}
-                        className="bg-gray-800 p-4 rounded-lg mb-4"
+        <ThemeProvider theme={theme}>
+            <div className="min-h-screen bg-gray-900 text-white flex flex-col">
+                <div className="flex justify-center items-center pt-4 pb-4 relative swiper-container">
+                    <button
+                        className="absolute left-0 z-10 text-gray-400 p-3"
+                        onClick={() => swiperRef.current.swiper.slidePrev()}
                     >
-                        <div className="flex justify-between items-center mb-3">
-                            <div className="flex items-center">
-                                <ThemeProvider theme={theme}>
-                                    <Checkbox
-                                        checked={exercise.completed}
-                                        onChange={() => toggleCompletion(selectedDay, exercise.id)}
-                                        sx={{
-                                            color: 'white',
-                                            padding: 0,
-                                            marginRight: '0.5rem',
-                                            '&.Mui-checked': {
-                                                color: 'white',
-                                            },
-                                        }}
-                                    />
-                                </ThemeProvider>
-                                <h3 className="text-lg font-semibold">{exercise.name}</h3>
-                            </div>
-                            <span className="text-gray-400 font-semibold">{exercise.reps}</span>
-                        </div>
-                        <div className="mt-2 text-gray-300">
-                            <p className='text-md text-gray-300 mb-3'>{exercise.description}</p>
-                            <p className="text-sm text-gray-500 mt-6">Muscles: {exercise.muscles.join(', ')}</p>
-                        </div>
+                        <KeyboardArrowLeftIcon />
+                    </button>
+                    <div className="swiper-fade-left"></div>
+                    <Swiper
+                        ref={swiperRef}
+                        spaceBetween={50}
+                        slidesPerView={1}
+                        onSlideChange={handleDayChange}
+                        initialSlide={selectedDayIndex}
+                        navigation={{
+                            nextEl: '.swiper-button-next',
+                            prevEl: '.swiper-button-prev',
+                        }}
+                        modules={[Navigation]}
+                        loop={true}
+                    >
+                        {daysOfWeek.map((day) => (
+                            <SwiperSlide key={day.id}>
+                                <h2 className="text-lg font-semibold text-center">{day.name}</h2>
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+                    <div className="swiper-fade-right"></div>
+                    <button
+                        className="absolute right-0 z-10 text-gray-400 p-3"
+                        onClick={() => swiperRef.current.swiper.slideNext()}
+                    >
+                        <KeyboardArrowRightIcon />
+                    </button>
+                </div>
+
+                <div className="flex justify-center items-center mb-6 mt-6">
+                    <div style={{ width: 160, height: 160 }}>
+                        <CircularProgressbarWithChildren value={(completedCount / totalExercises) * 100}>
+                            <h1 className='text-4xl text-center'>{`${completedCount}/${totalExercises}`}</h1>
+                            <h1 className="text-sm text-center text-gray-100">Exercises</h1>
+                        </CircularProgressbarWithChildren>
                     </div>
-                ))}
-            </animated.div>
-        </div>
+                </div>
+
+                <animated.div style={transitions} className="flex-1 overflow-y-auto px-4">
+                    {exercises.map((exercise) => (
+                        <div
+                            key={exercise.id}
+                            className="bg-gray-800 p-4 rounded-lg mb-4"
+                        >
+                            <div className="flex justify-between items-center mb-3">
+                                <div className="flex items-center">
+                                    <ThemeProvider theme={theme}>
+                                        <Checkbox
+                                            checked={exercise.completed}
+                                            onChange={() => toggleCompletion(selectedDay, exercise.id)}
+                                            sx={{
+                                                color: 'white',
+                                                padding: 0,
+                                                marginRight: '0.5rem',
+                                                '&.Mui-checked': {
+                                                    color: 'white',
+                                                },
+                                            }}
+                                        />
+                                    </ThemeProvider>
+                                    <h3 className="text-lg font-semibold">{exercise.name}</h3>
+                                </div>
+                                <span className="text-gray-400 font-semibold">{exercise.reps}</span>
+                            </div>
+                            <div className="mt-2 text-gray-300">
+                                <p className='text-md text-gray-300 mb-3'>{exercise.description}</p>
+                                <p className="text-sm text-gray-500 mt-6">Muscles: {exercise.muscles.join(', ')}</p>
+                            </div>
+                        </div>
+                    ))}
+                </animated.div>
+            </div>
+        </ThemeProvider>
     );
 };
 
