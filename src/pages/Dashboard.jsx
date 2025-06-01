@@ -33,8 +33,11 @@ const daysOfWeek = [
 ];
 
 const Dashboard = () => {
+    // State for the currently selected day (default: today)
     const [selectedDayIndex, setSelectedDayIndex] = useState(new Date().getDay());
     const swiperRef = useRef(null);
+
+    // Workouts data for each day (by day index)
     const [workouts, setWorkouts] = useState({
         0: [],
         1: [
@@ -178,11 +181,13 @@ const Dashboard = () => {
         ],
     });
 
+    // Handle day change from Swiper
     const handleDayChange = (swiper) => {
         const newIndex = swiper.realIndex;
         setSelectedDayIndex(newIndex);
     };
 
+    // Toggle completion state for an exercise
     const toggleCompletion = (day, id) => {
         setWorkouts((prevWorkouts) => ({
             ...prevWorkouts,
@@ -192,11 +197,13 @@ const Dashboard = () => {
         }));
     };
 
+    // Get selected day's workouts and completion stats
     const selectedDay = daysOfWeek[selectedDayIndex].id;
     const exercises = workouts[selectedDay];
     const completedCount = exercises.filter((exercise) => exercise.completed).length;
     const totalExercises = exercises.length;
 
+    // Animation for exercise list
     const transitions = useSpring({
         opacity: 1,
         transform: 'translateY(0)',
@@ -211,9 +218,10 @@ const Dashboard = () => {
     return (
         <ThemeProvider theme={theme}>
             <div className="min-h-screen bg-gray-900 text-white flex flex-col">
-                <div className="flex justify-center items-center pt-4 pb-4 relative swiper-container">
+                {/* Swiper for selecting day of the week */}
+                <div className="flex justify-center items-center pt-6 pb-6 relative swiper-container">
                     <button
-                        className="absolute left-0 z-10 text-gray-400 p-3"
+                        className="absolute left-0 z-10 text-gray-300 p-3"
                         onClick={() => swiperRef.current.swiper.slidePrev()}
                     >
                         <KeyboardArrowLeftIcon />
@@ -240,54 +248,64 @@ const Dashboard = () => {
                     </Swiper>
                     <div className="swiper-fade-right"></div>
                     <button
-                        className="absolute right-0 z-10 text-gray-400 p-3"
+                        className="absolute right-0 z-10 text-gray-300 p-3"
                         onClick={() => swiperRef.current.swiper.slideNext()}
                     >
                         <KeyboardArrowRightIcon />
                     </button>
                 </div>
 
+                {/* Circular progress bar for completed exercises */}
                 <div className="flex justify-center items-center mb-6 mt-6">
                     <div style={{ width: 160, height: 160 }}>
-                        <CircularProgressbarWithChildren value={(completedCount / totalExercises) * 100}>
+                        <CircularProgressbarWithChildren value={totalExercises === 0 ? 0 : (completedCount / totalExercises) * 100}>
                             <h1 className='text-4xl text-center'>{`${completedCount}/${totalExercises}`}</h1>
                             <h1 className="text-sm text-center text-gray-100">Exercises</h1>
                         </CircularProgressbarWithChildren>
                     </div>
                 </div>
 
+                {/* Exercise list or "No workouts found" message */}
                 <animated.div style={transitions} className="flex-1 overflow-y-auto px-4">
-                    {exercises.map((exercise) => (
-                        <div
-                            key={exercise.id}
-                            className="bg-gray-800 p-4 rounded-lg mb-4"
-                        >
-                            <div className="flex justify-between items-center mb-3">
-                                <div className="flex items-center">
-                                    <ThemeProvider theme={theme}>
-                                        <Checkbox
-                                            checked={exercise.completed}
-                                            onChange={() => toggleCompletion(selectedDay, exercise.id)}
-                                            sx={{
-                                                color: 'white',
-                                                padding: 0,
-                                                marginRight: '0.5rem',
-                                                '&.Mui-checked': {
-                                                    color: 'white',
-                                                },
-                                            }}
-                                        />
-                                    </ThemeProvider>
-                                    <h3 className="text-lg font-semibold">{exercise.name}</h3>
-                                </div>
-                                <span className="text-gray-400 font-semibold">{exercise.reps}</span>
-                            </div>
-                            <div className="mt-2 text-gray-300">
-                                <p className='text-md text-gray-300 mb-3'>{exercise.description}</p>
-                                <p className="text-sm text-gray-500 mt-6">Muscles: {exercise.muscles.join(', ')}</p>
-                            </div>
+                    {exercises.length === 0 ? (
+                        // IMPORTANT: This message is shown when there are no workouts for the selected day
+                        <div className="text-center text-gray-400 mt-10 text-lg">
+                            No workouts found for this day.
                         </div>
-                    ))}
+                    ) : (
+                        exercises.map((exercise) => (
+                            <div
+                                key={exercise.id}
+                                className="bg-gray-800 p-4 rounded-lg mb-4"
+                            >
+                                <div className="flex justify-between items-center mb-3">
+                                    <div className="flex items-center">
+                                        {/* Checkbox for marking exercise as completed */}
+                                        <ThemeProvider theme={theme}>
+                                            <Checkbox
+                                                checked={exercise.completed}
+                                                onChange={() => toggleCompletion(selectedDay, exercise.id)}
+                                                sx={{
+                                                    color: 'white',
+                                                    padding: 0,
+                                                    marginRight: '0.5rem',
+                                                    '&.Mui-checked': {
+                                                        color: 'white',
+                                                    },
+                                                }}
+                                            />
+                                        </ThemeProvider>
+                                        <h3 className="text-lg font-semibold">{exercise.name}</h3>
+                                    </div>
+                                    <span className="text-gray-400 font-semibold">{exercise.reps}</span>
+                                </div>
+                                <div className="mt-2 text-gray-300">
+                                    <p className='text-md text-gray-300 mb-3'>{exercise.description}</p>
+                                    <p className="text-sm text-gray-500 mt-6">Muscles: {exercise.muscles.join(', ')}</p>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </animated.div>
             </div>
         </ThemeProvider>
@@ -295,3 +313,12 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+/*
+IMPORTANT NOTES:
+- The "No workouts found for this day." message will appear if the selected day has no workouts (empty array).
+- The circular progress bar will show 0/0 if there are no exercises for the day.
+- To add or remove workouts for a day, edit the `workouts` state object.
+- Swiper navigation allows switching between days of the week.
+- Each exercise can be marked as completed with the checkbox.
+*/
