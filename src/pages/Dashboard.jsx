@@ -276,19 +276,36 @@ const Dashboard = () => {
                         exercises.map((exercise) => (
                             <div
                                 key={exercise.id}
-                                className="bg-gray-800 p-4 rounded-lg mb-4"
+                                // Make the whole card clickable to toggle completion
+                                onClick={() => toggleCompletion(selectedDay, exercise.id)}
+                                className={`bg-gray-800 p-4 rounded-lg mb-4 shadow-xl transition-all duration-300 cursor-pointer
+                                    ${exercise.completed ? 'opacity-40 line-through' : 'opacity-100'}
+                                `}
+                                style={{
+                                    /*backgroundColor: exercise.completed ? '#333333ff' : '',*/
+                                    textDecoration: exercise.completed ? 'line-through' : 'none',
+                                    userSelect: 'none', // Prevent text selection on click
+                                }}
+                                tabIndex={0} // Make card focusable for accessibility
+                                onKeyDown={e => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        toggleCompletion(selectedDay, exercise.id);
+                                    }
+                                }}
+                                aria-pressed={exercise.completed}
                             >
                                 <div className="flex justify-between items-center mb-3">
                                     <div className="flex items-center">
-                                        {/* Checkbox for marking exercise as completed */}
+                                        {/* Checkbox is now just for visual feedback, not for toggling */}
                                         <ThemeProvider theme={theme}>
                                             <Checkbox
                                                 checked={exercise.completed}
-                                                onChange={() => toggleCompletion(selectedDay, exercise.id)}
+                                                tabIndex={-1} // Prevent focus on checkbox itself
                                                 sx={{
                                                     color: 'white',
                                                     padding: 0,
                                                     marginRight: '0.5rem',
+                                                    pointerEvents: 'none', // Prevent click events on checkbox
                                                     '&.Mui-checked': {
                                                         color: 'white',
                                                     },
